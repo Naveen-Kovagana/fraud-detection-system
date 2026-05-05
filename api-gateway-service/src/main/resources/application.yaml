@@ -1,0 +1,33 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/fraud_db
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  cloud:
+    gateway:
+      routes:
+        - id: transaction-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/transactions/**
+
+        - id: fraud-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/frauds/**
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 900000
